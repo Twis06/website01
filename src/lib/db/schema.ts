@@ -1,9 +1,9 @@
 import { sql } from "drizzle-orm";
 import {
+  text,
   integer,
   sqliteTable,
-  text,
-  primaryKey,
+  sqliteTableCreator,
 } from "drizzle-orm/sqlite-core";
 
 export const posts = sqliteTable("posts", {

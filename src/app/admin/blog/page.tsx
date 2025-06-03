@@ -16,17 +16,17 @@ interface Post {
 }
 
 export default function BlogList() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/admin");
+    if (!session?.user) {
+      router.push('/admin');
     }
-  }, [status, router]);
+  }, [session, router]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -47,20 +47,20 @@ export default function BlogList() {
       }
     };
 
-    if (status === "authenticated") {
+    if (session?.user) {
       fetchPosts();
     }
-  }, [status]);
+  }, [session]);
 
-  if (status === "loading" || isLoading) {
+  if (!session || isLoading) {
     return (
       <div className="text-center py-12">
-        <div className="text-lg font-medium">Loading...</div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
       </div>
     );
   }
 
-  if (status === "unauthenticated") {
+  if (!session.user) {
     return null;
   }
 

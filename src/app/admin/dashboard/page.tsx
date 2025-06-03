@@ -11,23 +11,24 @@ type FileInfo = {
 };
 
 export default function AdminDashboard() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [files, setFiles] = useState<FileInfo[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/admin");
+    if (!session?.user) {
+      router.push('/admin');
     }
-    if (status === "authenticated") {
+    if (session?.user) {
       fetchFiles();
     }
     // eslint-disable-next-line
-  }, [status]);
+  }, [session, router]);
 
   const fetchFiles = async () => {
     try {
@@ -44,40 +45,39 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsLoading(true);
+    setMessage("");
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
+      setMessage('File uploaded successfully!');
+      fetchFiles(); // 刷新文件列表
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      setMessage('Error uploading file. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file) return;
-
-    setIsUploading(true);
-    setError(null);
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        alert("File uploaded successfully!");
-        fetchFiles(); // 刷新文件列表
-      } else {
-        setError("Upload failed. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error uploading file:", error);
-      setError("Upload failed. Please try again.");
-    } finally {
-      setIsUploading(false);
-    }
+    // Add your form submission logic here
   };
 
   const handleDelete = async (key: string) => {
@@ -103,7 +103,7 @@ export default function AdminDashboard() {
     }
   };
 
-  if (status === "loading") {
+  if (session === null) {
     return (
       <div className="text-center py-12">
         <div className="text-lg font-medium">Loading...</div>
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
     );
   }
 
-  if (status === "unauthenticated") {
+  if (session === null) {
     router.push("/admin");
     return null;
   }

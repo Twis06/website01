@@ -13,7 +13,7 @@ const MDEditor = dynamic(
 );
 
 export default function NewPost() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -24,10 +24,10 @@ export default function NewPost() {
   const [shouldRedirect, setShouldRedirect] = useState(false);
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/admin");
+    if (!session?.user) {
+      router.push('/admin');
     }
-  }, [status, router]);
+  }, [session, router]);
 
   useEffect(() => {
     if (shouldRedirect) {
@@ -78,7 +78,7 @@ export default function NewPost() {
     }
   };
 
-  if (status === "loading") {
+  if (session === null) {
     return (
       <div className="text-center py-12">
         <div className="text-lg font-medium">Loading...</div>
@@ -86,7 +86,7 @@ export default function NewPost() {
     );
   }
 
-  if (status === "unauthenticated") {
+  if (session === undefined) {
     return null;
   }
 

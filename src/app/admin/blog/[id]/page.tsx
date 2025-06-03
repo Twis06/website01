@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import "@uiw/react-md-editor/markdown-editor.css";
@@ -31,8 +31,9 @@ type Post = {
 type Tab = "edit" | "preview";
 
 export default function EditPost({ params }: { params: { id: string } }) {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
+  const { id } = useParams();
   const [post, setPost] = useState<Post | null>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -44,15 +45,12 @@ export default function EditPost({ params }: { params: { id: string } }) {
   const [activeTab, setActiveTab] = useState<Tab>("edit");
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/admin");
+    if (!session?.user) {
+      router.push('/admin');
       return;
     }
-
-    if (status === "authenticated") {
-      fetchPost();
-    }
-  }, [status, router, params.id]);
+    fetchPost();
+  }, [session, router, fetchPost]);
 
   const fetchPost = async () => {
     try {
@@ -110,7 +108,7 @@ export default function EditPost({ params }: { params: { id: string } }) {
     }
   };
 
-  if (status === "loading" || isLoading) {
+  if (session === null || isLoading) {
     return (
       <div className="text-center py-12">
         <div className="text-lg font-medium">Loading...</div>

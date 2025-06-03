@@ -1,35 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function AdminLogin() {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/admin/dashboard");
+    }
+  }, [status, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError(null);
+    setMessage("");
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
+      const response = await signIn("credentials", {
         redirect: false,
+        email: email,
+        password: password,
       });
 
-      if (result?.error) {
-        setError("Invalid email or password");
-      } else {
-        router.push("/admin/dashboard");
+      if (response?.error) {
+        setMessage("Invalid email or password");
       }
     } catch (error) {
-      setError("An error occurred. Please try again.");
+      setMessage("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -44,9 +51,9 @@ export default function AdminLogin() {
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
+          {message && (
             <div className="rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700">{error}</div>
+              <div className="text-sm text-red-700">{message}</div>
             </div>
           )}
           <div className="rounded-md shadow-sm -space-y-px">
