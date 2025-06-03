@@ -22,7 +22,7 @@ export default async function Home() {
       <section className="text-center mb-16">
         <h1 className="text-4xl font-bold mb-4">Welcome to My Portfolio</h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          I'm a full-stack developer passionate about creating beautiful and functional web applications.
+          I&apos;m a full-stack developer passionate about creating beautiful and functional web applications.
         </p>
       </section>
 
@@ -137,7 +137,7 @@ export default async function Home() {
         <h2 className="text-2xl font-bold mb-8">About Me</h2>
         <div className="bg-white rounded-lg shadow-md p-8">
           <p className="text-gray-600 mb-4">
-            I'm a full-stack developer with expertise in modern web technologies.
+            I&apos;m a full-stack developer with expertise in modern web technologies.
             I love building applications that are both beautiful and functional.
           </p>
           <p className="text-gray-600 mb-4">
@@ -162,7 +162,7 @@ export default async function Home() {
         <h2 className="text-2xl font-bold mb-8">Get in Touch</h2>
         <div className="bg-white rounded-lg shadow-md p-8">
           <p className="text-gray-600 mb-4">
-            I'm always open to new opportunities and collaborations.
+            I&apos;m always open to new opportunities and collaborations.
             Feel free to reach out to me through any of the following channels:
           </p>
           <div className="flex space-x-6">

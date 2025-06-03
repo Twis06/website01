@@ -9,14 +9,14 @@
           <h2 className="text-2xl font-bold mb-4">Introduction</h2>
           <div className="prose max-w-none">
             <p className="text-gray-600 mb-4">
-              Hello! I'm a passionate full-stack developer with a strong focus on creating
+              Hello! I&apos;m a passionate full-stack developer with a strong focus on creating
               beautiful, functional, and user-friendly web applications. I love solving
               complex problems and turning ideas into reality through code.
             </p>
             <p className="text-gray-600 mb-4">
-              With several years of experience in web development, I've worked on various
+              With several years of experience in web development, I&apos;ve worked on various
               projects ranging from small business websites to large-scale enterprise
-              applications. I'm always eager to learn new technologies and best practices
+              applications. I&apos;m always eager to learn new technologies and best practices
               to improve my skills.
             </p>
           </div>
